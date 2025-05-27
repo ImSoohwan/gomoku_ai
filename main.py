@@ -38,12 +38,6 @@ def end_game(winner, board):
     
 def print_board_console(board):
     print("=======================================")
-    print("#", end=" ")
-    print("\033[33m", end="") #색상 입력 시작
-    for i in range(len(board)):
-        print(i, end=" ")
-    print("\033[0m", end="") #색상 입력 초기화
-    print()
     print_board(board, number=True,)
     print("=======================================")
 
@@ -58,12 +52,13 @@ def print_error_message():
     input()
 
 
-def player_vs_ai():
-    board = create_board(10)
+def player_vs_ai(size):
+    alphabet_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+    board = create_board(size)
     aiMove = [0, (0,0)]
     while(True):
         clear()
-        print(f"AI의 이전 수: {aiMove[1]}")
+        print(f"AI의 이전 수: {aiMove[1][0], alphabet_list[aiMove[1][1]]}")
         
         winner = check_winner(board)
         if winner is not None:
@@ -75,7 +70,8 @@ def player_vs_ai():
 
         print_board_console(board)
         try:
-            playerInput = tuple(map(int,input('좌표를 입력하세요: ').strip().split()))
+            playerInput = input('좌표를 입력하세요: ').strip().split()
+            if len(playerInput) != 2: raise KeyError
             newBoard = apply_move(board, playerInput, 'O')
         except:
             print_error_message()
@@ -89,9 +85,9 @@ def player_vs_ai():
         aiMove= get_optimal_move(board, 'X', 'O', True, 1, 3)
         board = apply_move(board, aiMove[1], 'X')
 
-def input_ai_first_move():
+def input_ai_first_move(size):
     clear()
-    board = create_board(10)
+    board = create_board(size)
     while(True):
         print_board_console(board)
         try:
@@ -106,8 +102,8 @@ def input_ai_first_move():
             continue
     return newBoard
 
-def ai_vs_ai():
-    board = input_ai_first_move()
+def ai_vs_ai(size):
+    board = input_ai_first_move(size)
     current_ai = "X"
     opponent_ai = "O"
     while(True):
@@ -142,9 +138,9 @@ def select_mode():
     print("=======================================")
     choice = get_int_input((1, 2))
     if choice == 1:
-        player_vs_ai()
+        player_vs_ai(15)
     elif choice == 2:
-        ai_vs_ai()
+        ai_vs_ai(15)
 
 #게임 시작
 if __name__ == "__main__":
