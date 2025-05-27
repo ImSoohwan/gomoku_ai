@@ -5,11 +5,19 @@ def create_board(size):
     return board
 
 def print_board(board, blank_mark="#", number=False, O_mark = "O", X_mark = "X"):
+    if number:
+        alphabet_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+        print("#" if len(board) < 10 else '##', end=" ")
+        print("\033[33m", end="") #색상 입력 시작
+        for i in range(len(board)):
+            print(alphabet_list[i], end=" ")
+        print("\033[0m", end="") #색상 입력 초기화
+        print()
     count = 0
     for rows in board:
         if number: 
             print("\033[33m", end="") #색상 입력 시작
-            print(count, end=" ")
+            print(f"{count:02d}", end=" ")
             print("\033[0m", end="") #색상 입력 초기화
         for cell in rows:
             print(blank_mark if cell==" " else (O_mark if cell == "O" else (X_mark if cell == "X" else "#")), end=" ")
@@ -25,9 +33,30 @@ def is_valid_move(board, pos):
         return False
     return True
 
+def format_pos(pos):
+    alphabet_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+    try:
+        pos = int(pos)
+        return pos
+    except:
+        if type(pos) == type('A'):
+            pos = pos.upper()
+            count = 0
+            for alphabet in alphabet_list:
+                if alphabet == pos: return count
+                count += 1
+            return False
+        else: return False
+    
+
 def apply_move(board, pos, player):
-    if(is_valid_move(board, pos)):
-        px, py = pos
+    px, py = pos
+    px = format_pos(px)
+    py = format_pos(py)
+
+    if px == False or py == False: return False
+
+    if(is_valid_move(board, (px,py))):
         newBoard = copy.deepcopy(board)
         newBoard[px][py] = player
         return newBoard
@@ -73,3 +102,12 @@ def check_winner(board):
     return None
 
 
+
+# board = create_board(10)
+# board = apply_move(board, (0,0), "O")
+# board = apply_move(board, (0,1), "X")
+# board = apply_move(board, (0,2), "O")
+# board = apply_move(board, (0,3), "O")
+# board = apply_move(board, (0,4), "O")
+# print_board(board)
+# print(check_winner(board))
